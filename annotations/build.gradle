@@ -15,9 +15,6 @@ dependencies {
     	implementation project(':'+projectDir.getParentFile().name+':core')
     }
 }
-compileJava {
-    options.release = 8
-}
 
 eclipse.project {
     name = libName + "-annotations"
