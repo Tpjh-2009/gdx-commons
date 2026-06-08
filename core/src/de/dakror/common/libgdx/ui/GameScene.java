@@ -58,8 +58,17 @@ public abstract class GameScene extends Scene implements InputProcessor {
         return false;
     }
 
+    public boolean scrolled(float amountX,float amountY) {
+        return scrolled((int) amountY);
+    }
+
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(int amount){
+        return false;
+    }
+
+    public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+
         return false;
     }
 }

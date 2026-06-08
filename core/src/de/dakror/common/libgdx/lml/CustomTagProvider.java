@@ -41,7 +41,8 @@ public class CustomTagProvider implements LmlTagProvider {
             @Override
             protected Actor getNewInstanceOfActor(LmlActorBuilder builder) {
                 try {
-                    return clazz.getConstructor(Skin.class, String.class).newInstance(getSkin(builder), builder.getStyleName());
+                    return clazz.getConstructor(Skin.class, String.class)
+                            .newInstance(getSkin(builder), builder.getStyleName());
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;

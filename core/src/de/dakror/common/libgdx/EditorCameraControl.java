@@ -201,7 +201,8 @@ public abstract class EditorCameraControl extends InputAdapter {
     }
 
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(float amountX, float amountY) {
+        int amount = (int) amountY;
         clampZoom(cam.zoom + amount / 10f);
         return true;
     }

@@ -6,13 +6,13 @@ java {
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = ["src/"]
 
 dependencies {
-	if(projectDir.getParentFile().equals(rootDir)) {
+    if (projectDir.getParentFile().equals(rootDir)) {
         implementation project(':core')
     } else {
-    	implementation project(':'+projectDir.getParentFile().name+':core')
+        implementation project(':' + projectDir.getParentFile().name + ':core')
     }
 }
 

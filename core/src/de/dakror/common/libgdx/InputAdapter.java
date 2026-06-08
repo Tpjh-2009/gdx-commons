@@ -102,8 +102,12 @@ public class InputAdapter implements InputProcessor, GestureListener {
         return false;
     }
 
+    public boolean scrolled(float amountX,float amountY) {
+        return scrolled((int) amountY);
+    }
+
     @Override
-    public boolean scrolled(int amount) {
+    public boolean scrolled(int amount){
         return false;
     }
 }
