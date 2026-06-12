@@ -16,29 +16,29 @@
 
 package de.dakror.common.libgdx;
 
-import static com.badlogic.gdx.graphics.GL20.*;
-
-import java.util.Stack;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.WindowedMean;
-
 import de.dakror.common.libgdx.ui.Scene;
+
+import java.util.Stack;
+
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
+import static org.lwjgl.glfw.GLFW.glfwSetWindowPos;
 
 /**
  * @author Maximilian Stark | Dakror
  */
 public abstract class GameBase extends ApplicationAdapter {
     public static enum WindowMode {
-        Fullscreen, Borderless;
+        Fullscreen, Borderless, Windowed;
     }
 
     protected final Stack<Scene> sceneStack = new Stack<>();
@@ -75,34 +75,42 @@ public abstract class GameBase extends ApplicationAdapter {
         if (Gdx.app.getType() != ApplicationType.Desktop) return;
 
         Gdx.input.setCursorCatched(false);
-        if (mode == WindowMode.Borderless) {
-            Gdx.graphics.setUndecorated(true);
-            Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
-            Gdx.graphics.setResizable(true);
-        } else if (mode == WindowMode.Fullscreen) {
-            if (!Gdx.graphics.isFullscreen())
-                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        } /* else {
-          // cant re-decorate right now, idk
-             Gdx.graphics.setUndecorated(false);
-             Gdx.graphics.setWindowedMode(Gdx.graphics.getDisplayMode().width, Gdx.graphics.getDisplayMode().height);
-             Gdx.graphics.setResizable(true);
-             Gdx.graphics.setUndecorated(false);
-          }*/
 
+        com.badlogic.gdx.Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+        long window = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
+        switch (mode) {
+            case Windowed:
+                Gdx.graphics.setUndecorated(false);
+                Gdx.graphics.setWindowedMode(displayMode.width * 2 / 3, displayMode.height * 2 / 3);
+                Gdx.graphics.setResizable(true);
+                break;
+            case Borderless:
+                Gdx.graphics.setUndecorated(true);
+                Gdx.graphics.setWindowedMode(displayMode.width + 6, displayMode.height + 6);
+                Gdx.graphics.setResizable(false);
+                glfwSetWindowPos(window, -3, -3);
+                break;
+            case Fullscreen:
+                if (!Gdx.graphics.isFullscreen())
+                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                break;
+        }
+        Gdx.input.setInputProcessor(input);
+        glfwFocusWindow(window);
         this.mode = mode;
     }
 
     @Override
     public void create() {
-        input = new InputMultiplexer();
+        if(input == null)
+            input = new InputMultiplexer();
 
         if (Gdx.app.getType() == ApplicationType.Desktop) {
             input.addProcessor(new InputAdapter() {
                 @Override
                 public boolean keyDown(int keycode) {
                     if (keycode == Keys.F11) {
-                        if (mode == null) mode = WindowMode.Borderless;
+                        if (mode == WindowMode.Windowed) mode = WindowMode.Fullscreen;
                         setWindowMode(WindowMode.values()[(mode.ordinal() + 1) % WindowMode.values().length]);
 
                         return true;
@@ -110,6 +118,7 @@ public abstract class GameBase extends ApplicationAdapter {
                     return false;
                 }
             });
+//            input.addProcessor(Game.)
             setWindowMode(mode);
         }
 
