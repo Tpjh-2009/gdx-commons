@@ -16,7 +16,9 @@
 
 package de.dakror.common.libgdx;
 
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.MathUtils;
@@ -27,7 +29,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 /**
  * @author Maximilian Stark | Dakror
  */
-public abstract class EditorCameraControl extends InputAdapter {
+public abstract class EditorCameraControl extends InputAdapter implements GestureDetector.GestureListener {
     protected Viewport viewport;
     protected OrthographicCamera cam;
     protected GestureDetector gd;
@@ -202,8 +204,7 @@ public abstract class EditorCameraControl extends InputAdapter {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
-        int amount = (int) amountY;
-        clampZoom(cam.zoom + amount / 10f);
+        clampZoom(cam.zoom + amountY / 10f);
         return true;
     }
 
