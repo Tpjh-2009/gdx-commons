@@ -9,7 +9,7 @@ java {
 sourceSets.main.java.srcDirs = ["src/"]
 
 dependencies {
-    if (projectDir.getParentFile().equals(rootDir)) {
+    if (projectDir.getParentFile() == rootDir) {
         implementation project(':core')
     } else {
         implementation project(':' + projectDir.getParentFile().name + ':core')
