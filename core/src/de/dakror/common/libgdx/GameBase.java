@@ -104,8 +104,7 @@ public abstract class GameBase extends ApplicationAdapter {
 
     @Override
     public void create() {
-//        if(input == null)
-            input = new InputMultiplexer();
+        input = new InputMultiplexer();
 
         if (Gdx.app.getType() == ApplicationType.Desktop) {
             input.addProcessor(new InputAdapter() {
